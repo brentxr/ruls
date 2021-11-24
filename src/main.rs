@@ -2,10 +2,13 @@ extern crate termion;
 
 use std::fmt;
 use std::io;
+
 use std::fs::{self, DirEntry};
 use std::path::Path;
 use std::os::unix::fs::PermissionsExt;
 use std::os::unix::fs::MetadataExt;
+
+use users::{get_user_by_uid, get_current_uid};
 
 use chrono::{DateTime, TimeZone, Utc};
 
@@ -24,21 +27,26 @@ fn main() -> io::Result<()> {
             let meta = path.metadata()?;
             let perms = meta.permissions();
             let modified = Utc.timestamp(meta.mtime(), 0);
-            println!("{}d{}  {}\t\t{}",
+            let owner = get_user_by_uid(meta.uid()).unwrap();
+            
+            println!("{}d{} -\t {}  {}\t{}",
                     color::Fg(color::Blue),
-                    perms_to_string(format!("{:o}", 
-                    perms.mode()), 6),
+                    perms_to_string(format!("{:o}", perms.mode()), 6),
                     modified.format("%Y-%m-%d"),
+                    owner.name().to_string_lossy(),
                     path.display());
         }else {
             let meta = path.metadata()?;
             let perms = meta.permissions();
             let modified = Utc.timestamp(meta.mtime(), 0);
-            println!("{}d{}  {}\t\t{}",
+            let owner = get_user_by_uid(meta.uid()).unwrap();
+            let size = meta.size();
+            println!("{}-{} {}\t  {}  {}\t{}",
                     color::Fg(color::Yellow),
-                    perms_to_string(format!("{:o}", 
-                    perms.mode()), 9),
+                    perms_to_string(format!("{:o}", perms.mode()), 9),
+                    size,
                     modified.format("%Y-%m-%d"),
+                    owner.name().to_string_lossy(),
                     path.display());
         }
         
