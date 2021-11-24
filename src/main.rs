@@ -5,12 +5,17 @@ use std::io;
 use std::fs::{self, DirEntry};
 use std::path::Path;
 use std::os::unix::fs::PermissionsExt;
+use std::os::unix::fs::MetadataExt;
+
+use chrono::{DateTime, TimeZone, Utc};
 
 use termion::{color, style};
 
 
 fn main() -> io::Result<()> {
 
+    // maybe add headers later?
+    //println!("{: <15}{: <10}{: <10}{: <10}", "Permissions", "Modified", "comments", "code");
 
     for f in fs::read_dir("./")? {
         let f = f?;
@@ -18,18 +23,27 @@ fn main() -> io::Result<()> {
         if path.is_dir() {
             let meta = path.metadata()?;
             let perms = meta.permissions();
-            //println!("{}", perms_to_string(format!("{:o}", perms.mode())));
-            println!("{}{}\t\t{:?}", color::Fg(color::Blue), perms_to_string(format!("{:o}", perms.mode()), 6), path);
+            let modified = Utc.timestamp(meta.mtime(), 0);
+            println!("{}d{}  {}\t\t{}",
+                    color::Fg(color::Blue),
+                    perms_to_string(format!("{:o}", 
+                    perms.mode()), 6),
+                    modified.format("%Y-%m-%d"),
+                    path.display());
         }else {
             let meta = path.metadata()?;
             let perms = meta.permissions();
-            println!("{}{}\t\t{:?}", color::Fg(color::Yellow), perms_to_string(format!("{:o}", perms.mode()), 9), path);
+            let modified = Utc.timestamp(meta.mtime(), 0);
+            println!("{}d{}  {}\t\t{}",
+                    color::Fg(color::Yellow),
+                    perms_to_string(format!("{:o}", 
+                    perms.mode()), 9),
+                    modified.format("%Y-%m-%d"),
+                    path.display());
         }
         
         
     }
-
-    //perm_to_string("11234");
 
     Ok(())
 
