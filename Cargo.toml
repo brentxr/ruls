@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 termion = "*"
+chrono = "0.4"
