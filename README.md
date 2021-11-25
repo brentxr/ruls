@@ -6,4 +6,4 @@ This is a pretty straightforward program. It is a "ls -la" colored and formatted
 
 
 ## Install
-cargo install --git https://gitlab.com/brentqws/ruls.git
+```cargo install --git https://gitlab.com/brentqws/ruls.git```
