@@ -15,7 +15,15 @@ use chrono::{TimeZone, Utc};
 use termion::raw::IntoRawMode;
 use termion::{color, style};
 
-fn main() -> std::io::Result<()> {
+    if args.len() <= 1 {
+        short_display();
+    } else if args.len() == 2 && args[1] == "-a" {
+        short_all_display();
+    } else if args.len() == 2 && args[1] == "-la" {
+        long_all_display();
+    } else if args.len() == 2 && args[1] == "-l" {
+        long_display();
+    }
 
     // get arguments
     let args: Vec<String> = env::args().collect();
@@ -40,6 +48,22 @@ fn main() -> std::io::Result<()> {
     Ok(())
 }
 
+        if &f_name[2..3] != "." {
+            write!(stdout, "{}{}", color::Fg(color::Blue), &f_name[2..])?;
+
+            write!(stdout, "\r\n")?;
+        }
+       
+    }
+
+    Ok(())
+}
+
+
+// print file names and directory names only no other details
+fn short_all_display() -> std::io::Result<()> {
+    let stdout = io::stdout();
+    let mut stdout = stdout.lock().into_raw_mode().unwrap();
 
 fn display(mode: i8) -> std::io::Result<()> {
 
