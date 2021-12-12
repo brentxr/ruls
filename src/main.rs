@@ -16,7 +16,7 @@ use termion::raw::IntoRawMode;
 use termion::{color, style};
 
 
-fn main() {
+fn main() -> std::io::Result<()>  {
     // get arguments
     let args: Vec<String> = env::args().collect();
 
